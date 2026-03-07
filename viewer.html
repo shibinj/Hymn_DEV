@@ -949,9 +949,18 @@
                             rel: 0,
                             modestbranding: 1,
                             showinfo: 0,
-                            iv_load_policy: 3
+                            iv_load_policy: 3,
+                            autoplay: 1
                         },
                         events: {
+                            onReady: function(event) {
+                                event.target.pauseVideo();
+                                document.getElementById('customControls').style.display = 'block';
+                                document.getElementById('pauseOverlay').style.display = 'block';
+                                const segmentDuration = window.currentVideoEnd - window.currentVideoStart;
+                                document.getElementById('totalTime').textContent = formatTime(segmentDuration);
+                                document.getElementById('currentTime').textContent = '0:00';
+                            },
                             onStateChange: onPlayerStateChange
                         }
                     });
