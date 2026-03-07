@@ -882,8 +882,8 @@
             }
             
             const embedUrl = params 
-                ? `https://www.youtube.com/embed/${videoId}?${params}&rel=0&modestbranding=1&showinfo=0&enablejsapi=1`
-                : `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&enablejsapi=1`;
+                ? `https://www.youtube.com/embed/${videoId}?${params}&rel=0&modestbranding=1&showinfo=0&enablejsapi=1&autoplay=0&fs=1&iv_load_policy=3`
+                : `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&enablejsapi=1&autoplay=0&fs=1&iv_load_policy=3`;
             
             document.getElementById('songDisplay').innerHTML = `
                 <div class="song-title">${displayNumber} - ${currentSong.name}${currentSong.name2 ? '<br>' + currentSong.name2 : ''}</div>
@@ -932,10 +932,15 @@
                             end: window.currentVideoEnd,
                             rel: 0,
                             modestbranding: 1,
-                            showinfo: 0
+                            showinfo: 0,
+                            autoplay: 0,
+                            fs: 1,
+                            disablekb: 0,
+                            iv_load_policy: 3
                         },
                         events: {
-                            onStateChange: onPlayerStateChange
+                            onStateChange: onPlayerStateChange,
+                            onReady: onPlayerReady
                         }
                     });
                 } else {
@@ -965,21 +970,27 @@
             updateFavButton();
         }
         
+        function onPlayerReady(event) {
+            // Player is ready, monitor time to stop at end
+            if (window.currentVideoEnd > 0) {
+                checkInterval = setInterval(() => {
+                    if (player && player.getCurrentTime) {
+                        const currentTime = player.getCurrentTime();
+                        if (currentTime >= window.currentVideoEnd - 0.3) {
+                            player.pauseVideo();
+                            document.getElementById('replayOverlay').style.display = 'flex';
+                            clearInterval(checkInterval);
+                        }
+                    }
+                }, 100);
+            }
+        }
+        
         function onPlayerStateChange(event) {
             // YT.PlayerState.ENDED = 0
             if (event.data === 0) {
                 document.getElementById('replayOverlay').style.display = 'flex';
-            }
-            
-            // Also check if we're near the end time
-            if (window.currentVideoEnd > 0 && player) {
-                checkInterval = setInterval(() => {
-                    const currentTime = player.getCurrentTime();
-                    if (currentTime >= window.currentVideoEnd - 0.5) {
-                        document.getElementById('replayOverlay').style.display = 'flex';
-                        clearInterval(checkInterval);
-                    }
-                }, 100);
+                if (checkInterval) clearInterval(checkInterval);
             }
         }
         
@@ -994,13 +1005,27 @@
             if (player && player.seekTo) {
                 player.seekTo(window.currentVideoStart);
                 player.playVideo();
+                
+                // Restart end-time monitoring
+                if (window.currentVideoEnd > 0) {
+                    checkInterval = setInterval(() => {
+                        if (player && player.getCurrentTime) {
+                            const currentTime = player.getCurrentTime();
+                            if (currentTime >= window.currentVideoEnd - 0.3) {
+                                player.pauseVideo();
+                                document.getElementById('replayOverlay').style.display = 'flex';
+                                clearInterval(checkInterval);
+                            }
+                        }
+                    }, 100);
+                }
             } else {
                 // Fallback: reload iframe
                 const container = document.getElementById('ytPlayer');
                 const videoId = window.currentVideoId;
                 const params = window.currentVideoStart ? `start=${window.currentVideoStart}` : '';
                 const endParam = window.currentVideoEnd ? `&end=${window.currentVideoEnd}` : '';
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?${params}${endParam}&rel=0&modestbranding=1&showinfo=0`;
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?${params}${endParam}&rel=0&modestbranding=1&showinfo=0&autoplay=0&fs=1&iv_load_policy=3`;
                 container.innerHTML = `
                     <iframe src="${embedUrl}" style="width: 100%; height: 450px; border: none;"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
