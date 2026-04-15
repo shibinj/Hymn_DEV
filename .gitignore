@@ -43,5 +43,8 @@ npm-debug.log*
 *.bak
 *.backup
 
+# Firebase config (contains API key — never commit)
+admin/firebase-config.js
+
 #AI tools
 .claude/

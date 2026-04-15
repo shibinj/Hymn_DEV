@@ -223,19 +223,7 @@
     import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc }
         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDJ5-YBSIxm7HuZc2D82OkTxxBHNRw6Awk",
-        authDomain: "holy-hymns.firebaseapp.com",
-        projectId: "holy-hymns",
-        storageBucket: "holy-hymns.firebasestorage.app",
-        messagingSenderId: "895486383107",
-        appId: "1:895486383107:web:f2915742618cfd1e02aa36"
-    };
-
-    const ALLOWED_ADMINS = [
-        "shibin.john@gmail.com",
-        // add more if needed
-    ];
+    import { firebaseConfig, ALLOWED_ADMINS } from "./firebase-config.js";
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
