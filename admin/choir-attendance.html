@@ -74,6 +74,26 @@
         }
     };
 
+    // Sanitize member names for use as Firestore field keys (dots cause nested path issues)
+    function toFirestoreKey(name)   { return name.replace(/\./g, '__dot__'); }
+    function fromFirestoreKey(name) { return name.replace(/__dot__/g, '.'); }
+
+    function encodeAttendanceRecord(record) {
+        const encoded = {};
+        for (const [name, status] of Object.entries(record)) {
+            encoded[toFirestoreKey(name)] = status;
+        }
+        return encoded;
+    }
+
+    function decodeAttendanceRecord(record) {
+        const decoded = {};
+        for (const [key, status] of Object.entries(record)) {
+            decoded[fromFirestoreKey(key)] = status;
+        }
+        return decoded;
+    }
+
     // Load all data from Firestore: attendance + members + archive
     window.loadAttendanceFromFirestore = async function() {
         try {
@@ -83,7 +103,7 @@
             const attSnap = await getDocs(collection(db, 'attendance'));
             attendanceData = {};
             attSnap.forEach(docSnap => {
-                attendanceData[docSnap.id] = docSnap.data();
+                attendanceData[docSnap.id] = decodeAttendanceRecord(docSnap.data());
             });
             localStorage.setItem('choirAttendance', JSON.stringify(attendanceData));
 
@@ -120,12 +140,12 @@
             updateSyncStatus('⬆️ Saving to cloud...');
             if (dateToSave) {
                 // Save a single date (called from markAttendanceAuto)
-                const data = attendanceData[dateToSave] || {};
+                const data = encodeAttendanceRecord(attendanceData[dateToSave] || {});
                 await setDoc(doc(db, 'attendance', dateToSave), data);
             } else {
                 // Save all dates (called from Save button / manual sync)
                 for (const [date, data] of Object.entries(attendanceData)) {
-                    await setDoc(doc(db, 'attendance', date), data);
+                    await setDoc(doc(db, 'attendance', date), encodeAttendanceRecord(data));
                 }
             }
             updateSyncStatus(`✅ Saved to cloud ${new Date().toLocaleTimeString()}`);
@@ -567,6 +587,7 @@
         </div>
         
         <!-- Attendance Tab -->
+        <div id="attendance" class="tab-content active">
         <div id="authSection" style="background: #fff3cd; padding: 20px; border-radius: 10px;
                 margin-bottom: 20px; border-left: 4px solid #ffc107;">
             <h3 style="color: #856404; margin-bottom: 15px;">🔒 Sign In Required</h3>
@@ -621,20 +642,21 @@
                     <div id="pastMembersList"></div>
                 </div>
             </div>
-        </div>
-        
+        </div><!-- end #attendance tab -->
+
         <!-- Quarterly Report Tab -->
         <div id="quarterly" class="tab-content">
             <div class="report-controls">
                 <label>Select Quarter:</label>
                 <select id="quarterSelect" onchange="generateQuarterlyReport()">
                     <option value="Q1">Q1 (Jan-Mar)</option>
-                    <option value="Q2">Q2 (Apr-Jun)</option>
+                    <option value="Q2" selected>Q2 (Apr-Jun)</option>
                     <option value="Q3">Q3 (Jul-Sep)</option>
                     <option value="Q4">Q4 (Oct-Dec)</option>
                 </select>
                 <select id="quarterYear" onchange="generateQuarterlyReport()">
-                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
                     <option value="2027">2027</option>
                 </select>
                 <button class="export-btn" onclick="exportToPDF('quarterly')">📄 Export to PDF</button>
@@ -647,7 +669,8 @@
             <div class="report-controls">
                 <label>Select Year:</label>
                 <select id="yearSelect" onchange="generateYearlyReport()">
-                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2026" selected>2026</option>
                     <option value="2027">2027</option>
                 </select>
                 <button class="export-btn" onclick="exportToPDF('yearly')">📄 Export to PDF</button>
@@ -820,14 +843,35 @@
         function switchTab(tabName, event) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
+
             if (event && event.target) {
                 event.target.classList.add('active');
             }
             document.getElementById(tabName).classList.add('active');
-            
-            if (tabName === 'quarterly') generateQuarterlyReport();
-            if (tabName === 'yearly') generateYearlyReport();
+
+            if (tabName === 'quarterly') {
+                // Default to current quarter and year
+                const now = new Date();
+                const currentYear = String(now.getFullYear());
+                const currentQ = ['Q1','Q1','Q1','Q2','Q2','Q2','Q3','Q3','Q3','Q4','Q4','Q4'][now.getMonth()];
+                const qSel = document.getElementById('quarterSelect');
+                const qySel = document.getElementById('quarterYear');
+                if (qySel && ![...qySel.options].some(o => o.value === currentYear)) {
+                    qySel.insertAdjacentHTML('afterbegin', `<option value="${currentYear}">${currentYear}</option>`);
+                }
+                if (qSel) qSel.value = currentQ;
+                if (qySel) qySel.value = currentYear;
+                generateQuarterlyReport();
+            }
+            if (tabName === 'yearly') {
+                const currentYear = String(new Date().getFullYear());
+                const ySel = document.getElementById('yearSelect');
+                if (ySel && ![...ySel.options].some(o => o.value === currentYear)) {
+                    ySel.insertAdjacentHTML('afterbegin', `<option value="${currentYear}">${currentYear}</option>`);
+                }
+                if (ySel) ySel.value = currentYear;
+                generateYearlyReport();
+            }
             if (tabName === 'manage') renderMemberLists();
         }
         

@@ -1180,8 +1180,12 @@
             document.getElementById('serviceTheme').value = matchedTheme;
         }
 
-        function showHistory() {
+        async function showHistory() {
             document.getElementById('historyModal').style.display = 'block';
+            if (serviceHistory.length === 0 && isAuthenticated) {
+                document.getElementById('historyList').innerHTML = '<p style="color:#6c757d;">⬇️ Loading from cloud...</p>';
+                await loadFromFirestore();
+            }
             displayFullHistory();
         }
 
@@ -1193,7 +1197,9 @@
             const historyToShow = filtered || serviceHistory;
             
             if (historyToShow.length === 0) {
-                document.getElementById('historyList').innerHTML = '<p>No services saved yet.</p>';
+                document.getElementById('historyList').innerHTML = isAuthenticated
+                    ? '<p>No services saved yet.</p>'
+                    : '<p style="color:#856404;">🔒 Sign in with Google to load service history from the cloud.</p>';
                 return;
             }
             
