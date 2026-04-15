@@ -8,7 +8,7 @@
     <!-- Firebase SDKs -->
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut }
+    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut }
         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, getDocs, doc, setDoc }
         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -53,10 +53,17 @@
         }
     });
 
+    // Handle redirect result on page load (fires after Google redirects back)
+    getRedirectResult(auth).catch(err => {
+        if (err && err.code !== 'auth/no-current-user') {
+            document.getElementById('authMessage').textContent = 'Sign-in failed: ' + err.message;
+        }
+    });
+
     window.signInWithGoogle = async function() {
         const provider = new GoogleAuthProvider();
         try {
-            await signInWithPopup(auth, provider);
+            await signInWithRedirect(auth, provider);
         } catch(err) {
             document.getElementById('authMessage').textContent = 'Sign-in failed: ' + err.message;
         }
