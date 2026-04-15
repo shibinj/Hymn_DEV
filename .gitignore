@@ -42,3 +42,6 @@ npm-debug.log*
 # Backup files
 *.bak
 *.backup
+
+#AI tools
+.claude/
