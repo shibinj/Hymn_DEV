@@ -95,7 +95,7 @@
             updateSyncStatus('⬇️ Loading from cloud...');
 
             // Load attendance
-            const attSnap = await getDocs(collection(db, 'attendance'));
+            const attSnap = await getDocs(collection(db, 'choirAttendance'));
             attendanceData = {};
             attSnap.forEach(docSnap => {
                 attendanceData[docSnap.id] = decodeAttendanceRecord(docSnap.data());
@@ -136,11 +136,11 @@
             if (dateToSave) {
                 // Save a single date (called from markAttendanceAuto)
                 const data = encodeAttendanceRecord(attendanceData[dateToSave] || {});
-                await setDoc(doc(db, 'attendance', dateToSave), data);
+                await setDoc(doc(db, 'choirAttendance', dateToSave), data);
             } else {
                 // Save all dates (called from Save button / manual sync)
                 for (const [date, data] of Object.entries(attendanceData)) {
-                    await setDoc(doc(db, 'attendance', date), encodeAttendanceRecord(data));
+                    await setDoc(doc(db, 'choirAttendance', date), encodeAttendanceRecord(data));
                 }
             }
             updateSyncStatus(`✅ Saved to cloud ${new Date().toLocaleTimeString()}`);
