@@ -40,7 +40,7 @@ If no songs match, respond helpfully without a <songs> block.
 Keep responses concise. Respond in the same language the user writes in (English or Malayalam).`;
 
 exports.hymnChat = onRequest(
-  { secrets: [GEMINI_API_KEY], cors: true },
+  { secrets: [GEMINI_API_KEY], cors: true, invoker: "public" },
   async (req, res) => {
     if (req.method === "OPTIONS") {
       res.set("Access-Control-Allow-Origin", "*");
@@ -64,7 +64,7 @@ exports.hymnChat = onRequest(
     try {
       const genAI = new GoogleGenerativeAI(GEMINI_API_KEY.value());
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         systemInstruction: SYSTEM_PROMPT,
       });
 
