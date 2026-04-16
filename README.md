@@ -33,10 +33,10 @@ A web-based platform for browsing, searching, and playing Malayalam Christian hy
 - Dark mode
 - Mobile responsive
 
-**Admin** *(sign-in required)*
-- **Worship Service Planner** — Smart song suggestions based on usage history, "Mark as Sung" tracking, WhatsApp sharing, service history view
-- **Choir Attendance Tracker** — Mark attendance, quarterly and yearly reports, PDF export, member archive management
-- **Lyrics Editor** — Add and edit song data
+**Admin** *(view-only is public; sign-in required to make changes)*
+- **Worship Service Planner** — View service history and search by song (public); create/edit/delete services and mark as sung (sign-in required)
+- **Choir Attendance Tracker** — View attendance by date and quarterly/yearly reports with PDF export (public); mark/update attendance (sign-in required)
+- **Lyrics Editor** — Add and edit song data *(sign-in required)*
 - **Timestamp Converter** — Generate YouTube deep-link timestamps
 
 ---
@@ -96,10 +96,14 @@ To configure, copy `admin/firebase-config.template.js` to `admin/firebase-config
 2. Pick a collection
 3. Click a song to view lyrics and video
 
-**Admin tools**
+**View service history / attendance / reports (public)**
+1. Navigate to `admin/admin.html`
+2. Select a tool — history and reports load without sign-in
+
+**Make changes (sign-in required)**
 1. Navigate to `admin/admin.html`
 2. Sign in with an authorized Google account
-3. Select a tool from the dashboard
+3. Select a tool to create/edit services or mark attendance
 
 ---
 
