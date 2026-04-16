@@ -142,14 +142,15 @@
         
         <!-- Auth Section -->
         <div id="authSection" style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
-            <span style="color: #856404; font-weight: 600;">🔒 Sign in to save services to the cloud</span>
+            <span style="color: #856404; font-weight: 600;">🔒 Sign in to create or edit services</span>
             <button onclick="signInWithGoogle()" style="background: white; border: 2px solid #e2e8f0; padding: 8px 16px;
                 margin-left: 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;
                 color: #2d3748; display: inline-flex; align-items: center; gap: 8px;">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google">
                 Sign in with Google
             </button>
-            <p id="authMessage" style="color: #e53e3e; margin-top: 8px; font-size: 12px;"></p>
+            <p style="margin-top: 6px; font-size: 12px; color: #856404;">💡 You can view service history without signing in.</p>
+            <p id="authMessage" style="color: #e53e3e; margin-top: 4px; font-size: 12px;"></p>
         </div>
         <div id="authInfo" style="display: none; background: #d4edda; padding: 12px 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #28a745;"></div>
 
@@ -168,12 +169,12 @@
         </div>
 
         <div class="controls">
-            <button onclick="generateService()">🎲 Generate New Service</button>
-            <button class="save-btn" onclick="saveService()">💾 Save Service</button>
+            <button id="btnGenerate" onclick="generateService()" disabled style="opacity:0.45; cursor:not-allowed;">🎲 Generate New Service</button>
+            <button id="btnSave" class="save-btn" onclick="saveService()" disabled style="opacity:0.45; cursor:not-allowed;">💾 Save Service</button>
             <button class="whatsapp-btn" onclick="shareToWhatsApp()">📱 Share to WhatsApp</button>
             <button class="history-btn" onclick="showHistory()">📜 View History</button>
             <button class="print-btn" onclick="window.print()">🖨️ Print</button>
-            <button onclick="manualSync()" style="background: #48bb78;">🔄 Sync Now</button>
+            <button id="btnSync" onclick="manualSync()" style="background: #48bb78; opacity:0.45; cursor:not-allowed;" disabled>🔄 Sync Now</button>
             <select id="offertoryConvention">
                 <option value="alternate">Alternate Conventions</option>
                 <option value="maramon-2025">Maramon 2025</option>
@@ -231,6 +232,16 @@
     window._db = db;
     window._auth = auth;
 
+    function setWriteButtonsEnabled(enabled) {
+        ['btnGenerate', 'btnSave', 'btnSync'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.disabled = !enabled;
+            btn.style.opacity = enabled ? '1' : '0.45';
+            btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+        });
+    }
+
     onAuthStateChanged(auth, async (user) => {
         if (user && ALLOWED_ADMINS.includes(user.email)) {
             isAuthenticated = true;
@@ -242,6 +253,7 @@
                 <button onclick="window._auth.signOut()" style="background:#dc3545; color:white; padding:6px 12px;
                 margin-left:12px; border:none; border-radius:5px; cursor:pointer; font-size:12px;">Sign Out</button>
             `;
+            setWriteButtonsEnabled(true);
             await loadFromFirestore();
         } else if (user) {
             signOut(auth);
@@ -252,6 +264,9 @@
             currentUser = null;
             document.getElementById('authSection').style.display = 'block';
             document.getElementById('authInfo').style.display = 'none';
+            setWriteButtonsEnabled(false);
+            // Load history publicly so anyone can view it
+            await loadFromFirestore();
         }
     });
 
@@ -353,7 +368,7 @@
 
         async function manualSync() {
             if (!isAuthenticated) {
-                alert('🔒 Please sign in with Google to sync to the cloud.');
+                alert('🔒 Please sign in with Google to sync changes to the cloud.');
                 return;
             }
             await loadFromFirestore();
@@ -1061,7 +1076,7 @@
                 populateTheme(e.target.value);
             });
             
-            // Firestore data is loaded after Google sign-in (see onAuthStateChanged above)
+            // Firestore data is loaded by onAuthStateChanged above (for all users, signed-in or not)
         });
 
         // Weekly themes for 2026 (add more years as needed)
@@ -1170,7 +1185,7 @@
 
         async function showHistory() {
             document.getElementById('historyModal').style.display = 'block';
-            if (serviceHistory.length === 0 && isAuthenticated) {
+            if (serviceHistory.length === 0) {
                 document.getElementById('historyList').innerHTML = '<p style="color:#6c757d;">⬇️ Loading from cloud...</p>';
                 await loadFromFirestore();
             }
@@ -1185,9 +1200,7 @@
             const historyToShow = filtered || serviceHistory;
             
             if (historyToShow.length === 0) {
-                document.getElementById('historyList').innerHTML = isAuthenticated
-                    ? '<p>No services saved yet.</p>'
-                    : '<p style="color:#856404;">🔒 Sign in with Google to load service history from the cloud.</p>';
+                document.getElementById('historyList').innerHTML = '<p style="color:#6c757d;">No services saved yet.</p>';
                 return;
             }
             
@@ -1224,23 +1237,28 @@
                 const originalIndex = serviceHistory.findIndex(s => s.date === service.date);
                 const isSung = service.confirmed === true;
 
-                // Only show edit/delete for today or future dates
+                // Edit/delete/mark-as-sung require authentication; share is always available
                 const isFutureOrToday = serviceDate >= today;
-                const actionButtons = isFutureOrToday ? `
+                const actionButtons = isAuthenticated && isFutureOrToday ? `
                     <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                         <button onclick="loadServiceForEdit(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #ed8936;">✏️ Edit</button>
                         <button onclick="deleteService(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #e53e3e;">🗑️ Delete</button>
                         <button onclick="shareServiceFromHistory(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #25d366;">📱 Share</button>
                     </div>
-                ` : isSung ? `
+                ` : isAuthenticated && isSung ? `
                     <div style="display: flex; gap: 5px; flex-wrap: wrap; align-items: center;">
                         <span style="font-size: 12px; color: #38a169; font-weight: 600;">✅ Sung</span>
                         <button onclick="unmarkAsSung(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #718096;">↩️ Unmark</button>
                         <button onclick="shareServiceFromHistory(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #25d366;">📱 Share</button>
                     </div>
-                ` : `
+                ` : isAuthenticated ? `
                     <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                         <button onclick="markAsSung(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #38a169;">✅ Mark as Sung</button>
+                        <button onclick="shareServiceFromHistory(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #25d366;">📱 Share</button>
+                    </div>
+                ` : `
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap; align-items: center;">
+                        ${isSung ? '<span style="font-size: 12px; color: #38a169; font-weight: 600;">✅ Sung</span>' : ''}
                         <button onclick="shareServiceFromHistory(${originalIndex})" style="padding: 6px 12px; font-size: 12px; background: #25d366;">📱 Share</button>
                     </div>
                 `;
