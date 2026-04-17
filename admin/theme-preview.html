@@ -200,45 +200,116 @@
         body.theme-6 footer { background: #ffffff; color: #6b6558; border: 1px solid #e8e4d8; }
 
         /* =========================================================
-           THEME 7: Glassmorphism (plum/blue gradient + frosted cards)
+           GLASSMORPHISM SHARED (themes 7a–7e)
            ========================================================= */
-        body.theme-7 {
+        body[class*="theme-7"] { background-attachment: fixed; }
+        body[class*="theme-7"] header,
+        body[class*="theme-7"] .card,
+        body[class*="theme-7"] footer {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* ---------- 7a. Aurora (plum/blue/pink) ---------- */
+        body.theme-7a {
             background:
                 radial-gradient(1200px 600px at 10% 10%, rgba(236,72,153,0.35), transparent 60%),
                 radial-gradient(1000px 500px at 90% 20%, rgba(59,130,246,0.35), transparent 60%),
                 radial-gradient(900px 500px at 50% 90%, rgba(168,85,247,0.35), transparent 60%),
                 linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-            background-attachment: fixed;
         }
-        body.theme-7 header {
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        body.theme-7a header, body.theme-7a .card, body.theme-7a footer {
+            background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        body.theme-7 h1 { color: #ffffff; }
-        body.theme-7 .subtitle { color: rgba(255,255,255,0.8); }
-        body.theme-7 .section-header { color: #ffffff; border-color: rgba(255,255,255,0.3); }
-        body.theme-7 .card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.18);
-            color: #ffffff;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        }
-        body.theme-7 .card:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
-        body.theme-7 .card-title { color: #ffffff; }
-        body.theme-7 .card-description { color: rgba(255,255,255,0.8); }
-        body.theme-7 .card-badge { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3); }
-        body.theme-7 footer {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.18);
             color: #ffffff;
         }
+        body.theme-7a h1, body.theme-7a .section-header, body.theme-7a .card-title { color: #ffffff; }
+        body.theme-7a .subtitle, body.theme-7a .card-description { color: rgba(255,255,255,0.8); }
+        body.theme-7a .section-header { border-color: rgba(255,255,255,0.3); }
+        body.theme-7a .card:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
+        body.theme-7a .card-badge { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3); }
+
+        /* ---------- 7b. Ocean (cyan/teal/blue) ---------- */
+        body.theme-7b {
+            background:
+                radial-gradient(1100px 600px at 15% 15%, rgba(6,182,212,0.40), transparent 60%),
+                radial-gradient(1000px 500px at 85% 25%, rgba(59,130,246,0.40), transparent 60%),
+                radial-gradient(900px 500px at 50% 95%, rgba(20,184,166,0.35), transparent 60%),
+                linear-gradient(135deg, #0c1e3b 0%, #0b2a4a 100%);
+        }
+        body.theme-7b header, body.theme-7b .card, body.theme-7b footer {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(186,230,253,0.25);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            color: #ffffff;
+        }
+        body.theme-7b h1, body.theme-7b .section-header, body.theme-7b .card-title { color: #ffffff; }
+        body.theme-7b .subtitle, body.theme-7b .card-description { color: rgba(224,242,254,0.85); }
+        body.theme-7b .section-header { border-color: rgba(186,230,253,0.3); }
+        body.theme-7b .card:hover { background: rgba(255,255,255,0.15); border-color: rgba(186,230,253,0.5); }
+        body.theme-7b .card-badge { background: rgba(6,182,212,0.55); border: 1px solid rgba(186,230,253,0.4); }
+
+        /* ---------- 7c. Sunset (orange/pink/rose) ---------- */
+        body.theme-7c {
+            background:
+                radial-gradient(1100px 600px at 10% 20%, rgba(251,146,60,0.45), transparent 60%),
+                radial-gradient(1000px 500px at 90% 10%, rgba(244,63,94,0.40), transparent 60%),
+                radial-gradient(900px 500px at 50% 95%, rgba(217,70,239,0.35), transparent 60%),
+                linear-gradient(135deg, #3b0764 0%, #581c87 100%);
+        }
+        body.theme-7c header, body.theme-7c .card, body.theme-7c footer {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,237,213,0.25);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+            color: #ffffff;
+        }
+        body.theme-7c h1, body.theme-7c .section-header, body.theme-7c .card-title { color: #ffffff; }
+        body.theme-7c .subtitle, body.theme-7c .card-description { color: rgba(255,237,213,0.85); }
+        body.theme-7c .section-header { border-color: rgba(255,237,213,0.3); }
+        body.theme-7c .card:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,237,213,0.45); }
+        body.theme-7c .card-badge { background: rgba(251,113,133,0.6); border: 1px solid rgba(255,237,213,0.35); }
+
+        /* ---------- 7d. Mesh Dark (green/blue/purple, near-black) ---------- */
+        body.theme-7d {
+            background:
+                radial-gradient(900px 500px at 20% 20%, rgba(16,185,129,0.45), transparent 55%),
+                radial-gradient(900px 500px at 80% 15%, rgba(59,130,246,0.45), transparent 55%),
+                radial-gradient(900px 500px at 30% 85%, rgba(139,92,246,0.45), transparent 55%),
+                radial-gradient(900px 500px at 80% 80%, rgba(236,72,153,0.35), transparent 55%),
+                #0a0a0f;
+        }
+        body.theme-7d header, body.theme-7d .card, body.theme-7d footer {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            color: #ffffff;
+        }
+        body.theme-7d h1, body.theme-7d .section-header, body.theme-7d .card-title { color: #ffffff; }
+        body.theme-7d .subtitle, body.theme-7d .card-description { color: rgba(255,255,255,0.75); }
+        body.theme-7d .section-header { border-color: rgba(255,255,255,0.2); }
+        body.theme-7d .card:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+        body.theme-7d .card-badge { background: rgba(16,185,129,0.5); border: 1px solid rgba(255,255,255,0.25); }
+
+        /* ---------- 7e. Frosted Light (pastel, light background) ---------- */
+        body.theme-7e {
+            background:
+                radial-gradient(1100px 600px at 10% 15%, rgba(167,243,208,0.55), transparent 60%),
+                radial-gradient(1000px 500px at 90% 20%, rgba(196,181,253,0.55), transparent 60%),
+                radial-gradient(900px 500px at 50% 95%, rgba(253,186,116,0.45), transparent 60%),
+                linear-gradient(135deg, #f5f3ff 0%, #eef2ff 100%);
+        }
+        body.theme-7e header, body.theme-7e .card, body.theme-7e footer {
+            background: rgba(255,255,255,0.55);
+            border: 1px solid rgba(255,255,255,0.7);
+            box-shadow: 0 8px 32px rgba(100,100,150,0.12);
+            color: #1f2937;
+        }
+        body.theme-7e h1, body.theme-7e .section-header, body.theme-7e .card-title { color: #1f2937; }
+        body.theme-7e .subtitle, body.theme-7e .card-description { color: #4b5563; }
+        body.theme-7e .section-header { border-color: rgba(100,100,150,0.2); }
+        body.theme-7e .card:hover { background: rgba(255,255,255,0.75); border-color: rgba(139,92,246,0.4); }
+        body.theme-7e .card-badge { background: #7c3aed; }
 
         /* =========================================================
            THEME 8: Monochrome minimal (white + black, thin borders)
@@ -279,7 +350,11 @@
             <button type="button" data-theme="4">4. Muted Teal</button>
             <button type="button" data-theme="5">5. Dark Mode</button>
             <button type="button" data-theme="6">6. Cream &amp; Charcoal</button>
-            <button type="button" data-theme="7">7. Glassmorphism</button>
+            <button type="button" data-theme="7a">7a. Glass: Aurora</button>
+            <button type="button" data-theme="7b">7b. Glass: Ocean</button>
+            <button type="button" data-theme="7c">7c. Glass: Sunset</button>
+            <button type="button" data-theme="7d">7d. Glass: Mesh Dark</button>
+            <button type="button" data-theme="7e">7e. Glass: Frosted Light</button>
             <button type="button" data-theme="8">8. Monochrome</button>
         </div>
 
