@@ -7,14 +7,14 @@
     <title>Holy Hymns | Malayalam Christian Songs Collection</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Complete collection of Malayalam Christian hymns, convention songs, and worship music with lyrics and videos. 663+ songs including Kristheeya Keerthanangal, Maramon Convention, Passion Week, and Holy Communion songs.">
+    <meta name="description" content="Complete collection of Malayalam Christian hymns, convention songs, and worship music with lyrics and videos. 678+ songs including Kristheeya Keerthanangal, Maramon Convention, Passion Week, and Holy Communion songs.">
     <meta name="keywords" content="Malayalam Christian hymns, ക്രിസ്തീയ കീർത്തനങ്ങൾ, Maramon convention songs, Kottarakara convention, worship songs, Malayalam worship, Christian keerthanangal">
     <link rel="canonical" href="https://shibinj.github.io/Hymn_project/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Holy Hymns | Malayalam Christian Songs Collection">
-    <meta property="og:description" content="663+ Malayalam Christian hymns with lyrics and videos. Kristheeya Keerthanangal, Maramon Convention, Passion Week, and more.">
+    <meta property="og:description" content="678+ Malayalam Christian hymns with lyrics and videos. Kristheeya Keerthanangal, Maramon Convention, Passion Week, and more.">
     <meta property="og:url" content="https://shibinj.github.io/Hymn_project/">
     <meta property="og:image" content="https://shibinj.github.io/Hymn_project/favicon.ico">
     <meta property="og:site_name" content="Holy Hymns">
@@ -202,6 +202,10 @@
             font-weight: 600;
             animation: pulse 2s infinite;
         }
+        @media (prefers-reduced-motion: reduce) {
+            .new-badge { animation: none; }
+            #chatBtn.pulsing::before { animation: none; }
+        }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -253,8 +257,8 @@
         
         .expand-btn {
             background: rgba(102, 126, 234, 0.1);
-            border: 2px solid #667eea;
-            color: #667eea;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -263,9 +267,9 @@
             transition: all 0.3s ease;
             white-space: nowrap;
         }
-        
+
         .expand-btn:hover {
-            background: #667eea;
+            background: var(--accent-color);
             color: white;
         }
         
@@ -322,7 +326,7 @@
         
         .collection-item-arrow {
             font-size: 1.2rem;
-            color: #667eea;
+            color: var(--accent-color);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -377,8 +381,8 @@
         .section-count {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 2px solid #f0f0f0;
-            color: #667eea;
+            border-top: 2px solid var(--border-color);
+            color: var(--accent-color);
             font-weight: 600;
         }
         
@@ -794,10 +798,10 @@
         <h2 class="category-header">🎪 Maramon Convention Songs</h2>
         <div class="sections">
             <div class="collection-group">
-                <div class="collection-group-header" onclick="toggleMaramonList()">
+                <div class="collection-group-header" onclick="toggleMaramonList()" tabindex="0" role="button" aria-expanded="false" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleMaramonList()}">
                     <div class="collection-group-info">
                         <div class="collection-group-title">🎪 Maramon Convention (2013-2026)</div>
-                        <div class="collection-group-subtitle">96 songs across 6 years</div>
+                        <div class="collection-group-subtitle">112 songs across 6 years</div>
                     </div>
                     <button class="expand-btn" id="maramon-toggle">▼ Show All Years</button>
                 </div>
@@ -902,7 +906,7 @@
     
     <!-- Chat Widget -->
     <div id="chatGreeting" onclick="dismissGreeting(true)">🎵 Hello! Looking for a hymn?<br><span style="font-size:12px;opacity:0.75;">I can find songs by theme, occasion, or lyrics.</span></div>
-    <button id="chatBtn" onclick="toggleChat()" title="Ask about hymns" style="position:fixed;">
+    <button id="chatBtn" onclick="toggleChat()" title="Ask about hymns">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="white"/>
             <text x="7" y="13.5" font-size="8" fill="rgba(102,126,234,1)" font-family="serif" font-weight="bold">♪</text>
@@ -957,8 +961,11 @@
         function toggleMaramonList() {
             const list = document.getElementById('maramon-list');
             const button = document.getElementById('maramon-toggle');
+            const header = document.querySelector('.collection-group-header');
             list.classList.toggle('expanded');
-            button.textContent = list.classList.contains('expanded') ? '▲ Hide Years' : '▼ Show All Years';
+            const isExpanded = list.classList.contains('expanded');
+            button.textContent = isExpanded ? '▲ Hide Years' : '▼ Show All Years';
+            if (header) header.setAttribute('aria-expanded', isExpanded);
         }
 
         // ── Chat Widget ───────────────────────────────────────────────
