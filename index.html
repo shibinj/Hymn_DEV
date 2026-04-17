@@ -413,18 +413,19 @@
         
         .disclaimer {
             background: rgba(255,255,255,0.15);
-            padding: 0 20px;
+            padding: 0;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
             text-align: left;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
+            transition: max-height 0.4s ease, padding 0.4s ease, margin-bottom 0.4s ease;
         }
 
         .disclaimer.expanded {
-            max-height: 500px;
+            max-height: 1200px;
             padding: 20px;
+            margin-bottom: 20px;
         }
         
         .disclaimer h3 {
