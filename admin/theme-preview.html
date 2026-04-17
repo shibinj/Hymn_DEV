@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Theme Preview</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .theme-switcher {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .theme-switcher button {
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .theme-switcher button:hover { background: rgba(255,255,255,0.25); }
+        .theme-switcher button.active { background: white; color: #111; border-color: white; }
+
+        header {
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        h1 { font-size: 32px; margin-bottom: 10px; transition: color 0.4s ease; }
+        .subtitle { font-size: 16px; transition: color 0.4s ease; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease, color 0.4s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+        .card-icon { font-size: 48px; margin-bottom: 15px; }
+        .card-title { font-size: 22px; font-weight: 600; margin-bottom: 10px; transition: color 0.4s ease; }
+        .card-description { font-size: 14px; line-height: 1.6; transition: color 0.4s ease; }
+
+        .card-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 10px;
+            color: white;
+            transition: background 0.4s ease;
+        }
+
+        .section-header {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        footer {
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* =========================================================
+           THEME 1: Slate + Blue accent (Vercel/Linear/Stripe style)
+           ========================================================= */
+        body.theme-1 { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+        body.theme-1 header { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        body.theme-1 h1 { color: #0f172a; }
+        body.theme-1 .subtitle { color: #64748b; }
+        body.theme-1 .section-header { color: white; border-color: rgba(255,255,255,0.3); }
+        body.theme-1 .card { background: white; color: #0f172a; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        body.theme-1 .card:hover { box-shadow: 0 15px 40px rgba(0,0,0,0.35); }
+        body.theme-1 .card-title { color: #0f172a; }
+        body.theme-1 .card-description { color: #64748b; }
+        body.theme-1 .card-badge { background: #3b82f6; }
+        body.theme-1 footer { background: rgba(255,255,255,0.1); color: white; }
+
+        /* =========================================================
+           THEME 2: Deep Indigo
+           ========================================================= */
+        body.theme-2 { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); }
+        body.theme-2 header { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        body.theme-2 h1 { color: #1e1b4b; }
+        body.theme-2 .subtitle { color: #6b7280; }
+        body.theme-2 .section-header { color: white; border-color: rgba(255,255,255,0.3); }
+        body.theme-2 .card { background: white; color: #1e1b4b; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        body.theme-2 .card:hover { box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        body.theme-2 .card-title { color: #1e1b4b; }
+        body.theme-2 .card-description { color: #6b7280; }
+        body.theme-2 .card-badge { background: #6366f1; }
+        body.theme-2 footer { background: rgba(255,255,255,0.1); color: white; }
+
+        /* =========================================================
+           THEME 3: Light mode (off-white + soft shadows)
+           ========================================================= */
+        body.theme-3 { background: #f8fafc; }
+        body.theme-3 header { background: white; box-shadow: 0 2px 12px rgba(15,23,42,0.06); border: 1px solid #e2e8f0; }
+        body.theme-3 h1 { color: #0f172a; }
+        body.theme-3 .subtitle { color: #64748b; }
+        body.theme-3 .section-header { color: #0f172a; border-color: #e2e8f0; }
+        body.theme-3 .card { background: white; color: #0f172a; box-shadow: 0 2px 12px rgba(15,23,42,0.06); border: 1px solid #e2e8f0; }
+        body.theme-3 .card:hover { box-shadow: 0 8px 24px rgba(15,23,42,0.12); }
+        body.theme-3 .card-title { color: #0f172a; }
+        body.theme-3 .card-description { color: #64748b; }
+        body.theme-3 .card-badge { background: #0ea5e9; }
+        body.theme-3 footer { background: white; color: #64748b; border: 1px solid #e2e8f0; }
+
+        /* =========================================================
+           THEME 4: Muted teal/sage (continuity with current green)
+           ========================================================= */
+        body.theme-4 { background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%); }
+        body.theme-4 header { background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        body.theme-4 h1 { color: #134e4a; }
+        body.theme-4 .subtitle { color: #6b7280; }
+        body.theme-4 .section-header { color: white; border-color: rgba(255,255,255,0.3); }
+        body.theme-4 .card { background: white; color: #134e4a; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        body.theme-4 .card:hover { box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        body.theme-4 .card-title { color: #134e4a; }
+        body.theme-4 .card-description { color: #6b7280; }
+        body.theme-4 .card-badge { background: #0d9488; }
+        body.theme-4 footer { background: rgba(255,255,255,0.1); color: white; }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header { padding: 20px; }
+            h1 { font-size: 24px; }
+            .subtitle { font-size: 14px; }
+            .grid { grid-template-columns: 1fr; gap: 15px; }
+            .card { padding: 20px; }
+            .card-icon { font-size: 36px; }
+            .card-title { font-size: 18px; }
+            .section-header { font-size: 20px; margin: 30px 0 15px 0; }
+        }
+    </style>
+</head>
+<body class="theme-1">
+    <div class="container">
+        <div class="theme-switcher" role="tablist" aria-label="Theme selector">
+            <button type="button" data-theme="1" class="active">1. Slate + Blue</button>
+            <button type="button" data-theme="2">2. Deep Indigo</button>
+            <button type="button" data-theme="3">3. Light Mode</button>
+            <button type="button" data-theme="4">4. Muted Teal</button>
+        </div>
+
+        <header>
+            <h1>🎵 KTR MTC Choir - Admin Page</h1>
+            <p class="subtitle">Worship Planning &amp; Choir Management Tools</p>
+        </header>
+
+        <div class="section-header">📋 Planning &amp; Management</div>
+        <div class="grid">
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">📝</div>
+                <div class="card-title">Worship Service Planner</div>
+                <div class="card-description">
+                    Plan Sunday worship services with auto-generated song selections, smart learning, and cloud sync.
+                </div>
+                <span class="card-badge">Internal Tool</span>
+            </a>
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">✅</div>
+                <div class="card-title">Choir Attendance Tracker</div>
+                <div class="card-description">
+                    Track choir member attendance with quarterly/yearly reports and GitHub authentication.
+                </div>
+                <span class="card-badge">Admin Only</span>
+            </a>
+        </div>
+
+        <div class="section-header">🎼 Hymn Resources</div>
+        <div class="grid">
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">📖</div>
+                <div class="card-title">Holy Hymns Collection</div>
+                <div class="card-description">
+                    Browse Malayalam Christian hymns, convention songs with lyrics and YouTube videos.
+                </div>
+                <span class="card-badge">Public</span>
+            </a>
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">📕</div>
+                <div class="card-title">Kristheeya Keerthanangal</div>
+                <div class="card-description">
+                    Complete Malayalam Christian Hymn Book with 504 hymns and doxology.
+                </div>
+                <span class="card-badge">Public</span>
+            </a>
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">✏️</div>
+                <div class="card-title">Lyrics Editor</div>
+                <div class="card-description">
+                    Add or edit lyrics for hymns and convention songs across all collections.
+                </div>
+                <span class="card-badge">Admin Only</span>
+            </a>
+        </div>
+
+        <div class="section-header">🔧 Utilities</div>
+        <div class="grid">
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">⏱️</div>
+                <div class="card-title">YouTube Timestamp Converter</div>
+                <div class="card-description">
+                    Convert between time format (MM:SS) and seconds for YouTube video timestamps.
+                </div>
+                <span class="card-badge">Utility Tool</span>
+            </a>
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">🔐</div>
+                <div class="card-title">Whitelist Generator</div>
+                <div class="card-description">
+                    Generate encrypted GitHub username whitelist for choir attendance authentication.
+                </div>
+                <span class="card-badge">Setup Tool</span>
+            </a>
+            <a href="#" class="card" onclick="return false;">
+                <div class="card-icon">🔒</div>
+                <div class="card-title">Password Hash Generator</div>
+                <div class="card-description">
+                    Generate SHA-256 password hashes for secure authentication (legacy tool).
+                </div>
+                <span class="card-badge">Setup Tool</span>
+            </a>
+        </div>
+
+        <footer>
+            <p><strong>KTR MTC Choir</strong></p>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">
+                Made with ❤️ for the Malayalam Christian community
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const body = document.body;
+        const buttons = document.querySelectorAll('.theme-switcher button');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const n = btn.dataset.theme;
+                body.className = 'theme-' + n;
+                buttons.forEach(b => b.classList.toggle('active', b === btn));
+            });
+        });
+    </script>
+</body>
+</html>
