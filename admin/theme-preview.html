@@ -169,6 +169,94 @@
         body.theme-4 .card-badge { background: #0d9488; }
         body.theme-4 footer { background: rgba(255,255,255,0.1); color: white; }
 
+        /* =========================================================
+           THEME 5: Dark mode (GitHub/Notion style)
+           ========================================================= */
+        body.theme-5 { background: #0d1117; }
+        body.theme-5 header { background: #161b22; box-shadow: 0 1px 0 rgba(255,255,255,0.06); border: 1px solid #30363d; }
+        body.theme-5 h1 { color: #f0f6fc; }
+        body.theme-5 .subtitle { color: #8b949e; }
+        body.theme-5 .section-header { color: #f0f6fc; border-color: #30363d; }
+        body.theme-5 .card { background: #161b22; color: #f0f6fc; border: 1px solid #30363d; box-shadow: none; }
+        body.theme-5 .card:hover { border-color: #58a6ff; box-shadow: 0 0 0 1px #58a6ff; }
+        body.theme-5 .card-title { color: #f0f6fc; }
+        body.theme-5 .card-description { color: #8b949e; }
+        body.theme-5 .card-badge { background: #238636; }
+        body.theme-5 footer { background: #161b22; color: #8b949e; border: 1px solid #30363d; }
+
+        /* =========================================================
+           THEME 6: Cream & charcoal (editorial/paper)
+           ========================================================= */
+        body.theme-6 { background: #fafaf5; }
+        body.theme-6 header { background: #ffffff; border: 1px solid #e8e4d8; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        body.theme-6 h1 { color: #1a1a1a; font-family: Georgia, 'Times New Roman', serif; }
+        body.theme-6 .subtitle { color: #6b6558; font-style: italic; }
+        body.theme-6 .section-header { color: #1a1a1a; border-color: #d4cfbf; font-family: Georgia, 'Times New Roman', serif; }
+        body.theme-6 .card { background: #ffffff; color: #1a1a1a; border: 1px solid #e8e4d8; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        body.theme-6 .card:hover { border-color: #c2410c; box-shadow: 0 4px 12px rgba(194,65,12,0.08); }
+        body.theme-6 .card-title { color: #1a1a1a; font-family: Georgia, 'Times New Roman', serif; }
+        body.theme-6 .card-description { color: #6b6558; }
+        body.theme-6 .card-badge { background: #c2410c; }
+        body.theme-6 footer { background: #ffffff; color: #6b6558; border: 1px solid #e8e4d8; }
+
+        /* =========================================================
+           THEME 7: Glassmorphism (plum/blue gradient + frosted cards)
+           ========================================================= */
+        body.theme-7 {
+            background:
+                radial-gradient(1200px 600px at 10% 10%, rgba(236,72,153,0.35), transparent 60%),
+                radial-gradient(1000px 500px at 90% 20%, rgba(59,130,246,0.35), transparent 60%),
+                radial-gradient(900px 500px at 50% 90%, rgba(168,85,247,0.35), transparent 60%),
+                linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            background-attachment: fixed;
+        }
+        body.theme-7 header {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        body.theme-7 h1 { color: #ffffff; }
+        body.theme-7 .subtitle { color: rgba(255,255,255,0.8); }
+        body.theme-7 .section-header { color: #ffffff; border-color: rgba(255,255,255,0.3); }
+        body.theme-7 .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #ffffff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        body.theme-7 .card:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
+        body.theme-7 .card-title { color: #ffffff; }
+        body.theme-7 .card-description { color: rgba(255,255,255,0.8); }
+        body.theme-7 .card-badge { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.3); }
+        body.theme-7 footer {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #ffffff;
+        }
+
+        /* =========================================================
+           THEME 8: Monochrome minimal (white + black, thin borders)
+           ========================================================= */
+        body.theme-8 { background: #ffffff; }
+        body.theme-8 header { background: #ffffff; border: 1px solid #000000; box-shadow: none; border-radius: 0; }
+        body.theme-8 h1 { color: #000000; letter-spacing: -0.5px; }
+        body.theme-8 .subtitle { color: #555555; }
+        body.theme-8 .section-header { color: #000000; border-color: #000000; }
+        body.theme-8 .card { background: #ffffff; color: #000000; border: 1px solid #000000; border-radius: 0; box-shadow: none; }
+        body.theme-8 .card:hover { background: #000000; color: #ffffff; transform: none; }
+        body.theme-8 .card:hover .card-title,
+        body.theme-8 .card:hover .card-description { color: #ffffff; }
+        body.theme-8 .card-title { color: #000000; }
+        body.theme-8 .card-description { color: #555555; }
+        body.theme-8 .card-badge { background: #000000; border-radius: 0; }
+        body.theme-8 footer { background: #ffffff; color: #000000; border: 1px solid #000000; border-radius: 0; }
+
         @media (max-width: 768px) {
             body { padding: 10px; }
             header { padding: 20px; }
@@ -189,6 +277,10 @@
             <button type="button" data-theme="2">2. Deep Indigo</button>
             <button type="button" data-theme="3">3. Light Mode</button>
             <button type="button" data-theme="4">4. Muted Teal</button>
+            <button type="button" data-theme="5">5. Dark Mode</button>
+            <button type="button" data-theme="6">6. Cream &amp; Charcoal</button>
+            <button type="button" data-theme="7">7. Glassmorphism</button>
+            <button type="button" data-theme="8">8. Monochrome</button>
         </div>
 
         <header>
