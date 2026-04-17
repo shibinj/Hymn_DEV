@@ -997,6 +997,10 @@
                     document.getElementById('container').style.display = 'grid';
                     updateFavCount();
                     displaySongList(filteredSongs);
+
+                    // Auto-select song from URL param (e.g. from chatbot link)
+                    const songParam = urlParams.get('song');
+                    if (songParam) selectSongByNumber(songParam);
                 }
             })
             .catch(err => {
@@ -1419,7 +1423,7 @@
                 toggleChat();
             } else {
                 // Different collection — navigate there
-                window.location.href = `viewer.html?collection=${song.col}#song${song.n}`;
+                window.location.href = `viewer.html?collection=${song.col}&song=${song.n}`;
             }
         }
     </script>
