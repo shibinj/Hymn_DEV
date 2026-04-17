@@ -128,28 +128,57 @@
             font-size: 1.1rem;
         }
         
-        .search-box { 
-            margin-bottom: 25px; 
+        .search-box {
+            margin-bottom: 25px;
             position: relative;
         }
-        
-        #searchInput { 
-            width: 100%; 
-            padding: 15px 20px; 
-            font-size: 16px; 
+
+        #searchInput {
+            width: 100%;
+            padding: 15px 46px 15px 20px;
+            font-size: 16px;
             border: none;
-            border-radius: 12px; 
+            border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             background: var(--card-bg);
             color: var(--text-primary);
         }
-        
+
         #searchInput:focus {
             outline: none;
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
             transform: translateY(-2px);
         }
+
+        #searchClear {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--text-muted);
+            border: none;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 13px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            padding: 0;
+            /* Expand touch target to 44px without changing visual size */
+            -webkit-tap-highlight-color: transparent;
+        }
+        #searchClear::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+        }
+        #searchClear:hover { background: var(--text-secondary); }
+        #searchInput::-webkit-search-cancel-button { display: none; }
         
         .loading {
             text-align: center;
@@ -666,7 +695,8 @@
     <div class="subtitle" id="pageSubtitle">Loading...</div>
     
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 Search or jump to song number — press Enter to open" aria-label="Search by name or number, press Enter to open first result">
+        <input type="search" id="searchInput" placeholder="🔍 Search by name or number" aria-label="Search by name or number, tap Go to open first result" inputmode="search" enterkeyhint="go" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button id="searchClear" onclick="clearSearch()" title="Clear search" aria-label="Clear search">✕</button>
     </div>
     
     <div class="loading" id="loading">Loading hymns...</div>
@@ -986,9 +1016,21 @@
                 document.getElementById('loading').innerHTML = '<p style="color: white;">❌ Error loading collection. Please go back to <a href="index.html" style="color: white;">home page</a>.</p>';
             });
 
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            document.getElementById('searchClear').style.display = 'none';
+            const searchBase = showingFavorites ? songs.filter(s => getFavorites().includes(s.number)) : songs;
+            filteredSongs = searchBase;
+            displaySongList(filteredSongs);
+            input.focus();
+        }
+
         // Search functionality — filters list on input, Enter jumps to first/exact match
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
+            const clearBtn = document.getElementById('searchClear');
+            clearBtn.style.display = query ? 'flex' : 'none';
             const searchBase = showingFavorites ? songs.filter(s => getFavorites().includes(s.number)) : songs;
             filteredSongs = searchBase.filter(song =>
                 song.number.toString().includes(query) ||
@@ -1002,12 +1044,13 @@
             if (e.key !== 'Enter') return;
             const query = e.target.value.trim().toUpperCase();
             if (!query) return;
-            // Prefer exact number match, fall back to first filtered result
             const exact = songs.find(s => String(s.number).toUpperCase() === query);
             const target = exact || filteredSongs[0];
             if (target) {
                 if (showingFavorites) toggleFavoritesView();
                 selectSongByNumber(target.number);
+                // Clear search so full list is restored
+                clearSearch();
                 e.target.blur();
             }
         });
