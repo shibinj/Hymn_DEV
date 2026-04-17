@@ -1401,13 +1401,25 @@
             songs.forEach(song => {
                 const card = document.createElement('div');
                 card.className = 'chat-song-card';
-                card.innerHTML = `
-                    <div class="chat-song-num">#${song.n}</div>
-                    <div>
-                        <div class="chat-song-name">${song.name}</div>
-                        <div class="chat-song-col">${song.colName}</div>
-                    </div>
-                `;
+
+                const numDiv = document.createElement('div');
+                numDiv.className = 'chat-song-num';
+                numDiv.textContent = `#${song.n}`;
+
+                const inner = document.createElement('div');
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'chat-song-name';
+                nameDiv.textContent = song.name;
+
+                const colDiv = document.createElement('div');
+                colDiv.className = 'chat-song-col';
+                colDiv.textContent = song.colName;
+
+                inner.appendChild(nameDiv);
+                inner.appendChild(colDiv);
+                card.appendChild(numDiv);
+                card.appendChild(inner);
                 card.onclick = () => openSongFromChat(song);
                 wrapper.appendChild(card);
             });

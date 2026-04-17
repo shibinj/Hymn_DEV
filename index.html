@@ -983,14 +983,26 @@
             songs.forEach(song => {
                 const a = document.createElement('a');
                 a.className = 'chat-song-card';
-                a.href = `viewer.html?collection=${song.col}&song=${song.n}`;
-                a.innerHTML = `
-                    <div class="chat-song-num">#${song.n}</div>
-                    <div>
-                        <div class="chat-song-name">${song.name}</div>
-                        <div class="chat-song-col">${song.colName}</div>
-                    </div>
-                `;
+                a.href = `viewer.html?collection=${encodeURIComponent(song.col)}&song=${encodeURIComponent(song.n)}`;
+
+                const numDiv = document.createElement('div');
+                numDiv.className = 'chat-song-num';
+                numDiv.textContent = `#${song.n}`;
+
+                const inner = document.createElement('div');
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'chat-song-name';
+                nameDiv.textContent = song.name;
+
+                const colDiv = document.createElement('div');
+                colDiv.className = 'chat-song-col';
+                colDiv.textContent = song.colName;
+
+                inner.appendChild(nameDiv);
+                inner.appendChild(colDiv);
+                a.appendChild(numDiv);
+                a.appendChild(inner);
                 wrapper.appendChild(a);
             });
 
