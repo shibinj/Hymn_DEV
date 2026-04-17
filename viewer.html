@@ -58,8 +58,10 @@
             --text-muted: #6c757d;
             --border-color: #f1f1f1;
             --accent-color: #667eea;
+            --chat-start: #667eea;
+            --chat-end: #764ba2;
         }
-        
+
         body.dark-mode {
             --bg-gradient-start: #1a202c;
             --bg-gradient-end: #2d3748;
@@ -69,6 +71,13 @@
             --text-muted: #a0aec0;
             --border-color: #4a5568;
             --accent-color: #9f7aea;
+            --chat-start: #7c72e8;
+            --chat-end: #9f7aea;
+        }
+
+        *:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
         }
         
         body { 
@@ -167,8 +176,8 @@
         
         .song-list::-webkit-scrollbar { width: 8px; }
         .song-list::-webkit-scrollbar-track { background: var(--border-color); border-radius: 10px; }
-        .song-list::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-        .song-list::-webkit-scrollbar-thumb:hover { background: #555; }
+        .song-list::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+        .song-list::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
         
         .song-item { 
             padding: 14px 16px; 
@@ -477,7 +486,7 @@
             .song-item { padding: 10px 12px; }
             .song-display { padding: 12px; }
             .song-title { font-size: 20px; }
-            .song-lyrics { font-size: 15px; line-height: 1.7; }
+            .song-lyrics { font-size: 15px; line-height: 1.9; }
             .share-btn { padding: 9px 12px; font-size: 12px; }
             iframe { height: 200px; }
         }
@@ -489,19 +498,19 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #0891b2, #0e7490);
+            background: linear-gradient(135deg, var(--chat-start), var(--chat-end));
             border: none;
             color: white;
             font-size: 22px;
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(8,145,178,0.5);
+            box-shadow: 0 4px 16px rgba(118,75,162,0.5);
             z-index: 1000;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        #chatBtn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(8,145,178,0.7); }
+        #chatBtn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(118,75,162,0.7); }
 
         #chatPanel {
             position: fixed;
@@ -523,7 +532,7 @@
             to   { opacity: 1; transform: scale(1)    translateY(0);    }
         }
         .chat-header {
-            background: linear-gradient(135deg, #0891b2, #0e7490);
+            background: linear-gradient(135deg, var(--chat-start), var(--chat-end));
             color: white;
             padding: 14px 16px;
             display: flex;
@@ -560,7 +569,7 @@
             max-height: 340px;
         }
         .chat-messages::-webkit-scrollbar { width: 4px; }
-        .chat-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
 
         .chat-bubble {
             max-width: 85%;
@@ -572,7 +581,7 @@
         }
         .chat-bubble.user {
             align-self: flex-end;
-            background: linear-gradient(135deg, #0891b2, #0e7490);
+            background: linear-gradient(135deg, var(--chat-start), var(--chat-end));
             color: white;
             border-bottom-right-radius: 4px;
         }
@@ -627,7 +636,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #0891b2, #0e7490);
+            background: linear-gradient(135deg, var(--chat-start), var(--chat-end));
             border: none;
             color: white;
             font-size: 16px;
@@ -643,8 +652,9 @@
         @media (max-width: 430px) {
             #chatPanel {
                 right: 0;
+                left: 0;
                 bottom: 80px;
-                width: 100vw;
+                width: 100%;
                 border-radius: 16px 16px 0 0;
                 max-height: 60vh;
             }
@@ -655,6 +665,7 @@
 <body>
     <div class="header-controls">
         <a href="index.html" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">← Home</a>
+        <a id="backToCollection" href="index.html" style="background: rgba(255,255,255,0.15); border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; text-decoration: none; display: none; transition: all 0.3s ease; margin-left: 8px;">↑ Collection</a>
         <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     </div>
     
@@ -662,11 +673,11 @@
     <div class="subtitle" id="pageSubtitle">Loading...</div>
     
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 Search by song number or name...">
+        <input type="text" id="searchInput" placeholder="🔍 Search by song number or name..." aria-label="Search songs by number or name">
     </div>
     
     <div class="quick-jump">
-        <input type="text" id="jumpInput" placeholder="Jump to song number (e.g., 123 or HC5)">
+        <input type="text" id="jumpInput" placeholder="Jump to song number (e.g., 123 or HC5)" aria-label="Jump to song number">
         <button onclick="jumpToSong()">Go</button>
     </div>
     
@@ -705,7 +716,7 @@
             </div>
         </div>
         <div class="chat-input-row">
-            <input type="text" id="chatInput" placeholder="Ask about hymns..." maxlength="300">
+            <input type="text" id="chatInput" placeholder="Ask about hymns..." maxlength="300" aria-label="Ask about hymns">
             <button id="chatSend" onclick="sendChatMessage()">➤</button>
         </div>
     </div>
@@ -970,6 +981,11 @@
         document.getElementById('pageTitle').textContent = collectionInfo.title;
         document.getElementById('pageSubtitle').textContent = collectionInfo.subtitle;
         document.title = collectionInfo.title + ' | Holy Hymns';
+
+        // Show back-to-collection button
+        const backBtn = document.getElementById('backToCollection');
+        backBtn.style.display = 'inline-block';
+        backBtn.href = `index.html#${collection}`;
         
         // Load songs from JSON
         fetch(collectionFile)
