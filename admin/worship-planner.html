@@ -47,6 +47,25 @@
         .history-btn:hover { background: #6b46c1; }
         .whatsapp-btn { background: #25d366; }
         .whatsapp-btn:hover { background: #1da851; }
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            padding: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
+        }
+        .icon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            background: inherit;
+        }
+        .icon-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
         .warning { color: #e53e3e; font-size: 11px; margin-top: 5px; }
         .recently-used { font-size: 12px; color: #718096; margin-top: 10px; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; padding: 10px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -75,7 +94,7 @@
             .service-info label { font-size: 12px; margin-bottom: 4px; }
             .service-info input, .service-info select { padding: 10px; font-size: 14px; }
             .controls { gap: 6px; margin-bottom: 15px; }
-            button { padding: 10px 14px; font-size: 12px; min-height: 44px; }
+            button:not(.icon-btn) { padding: 10px 14px; font-size: 12px; min-height: 44px; }
             select { font-size: 13px; width: 100%; padding: 10px; }
             .service-section { padding: 12px; margin-bottom: 12px; }
             .section-title { font-size: 14px; margin-bottom: 10px; }
@@ -112,7 +131,7 @@
             .service-info { padding: 10px; }
             .service-info label { font-size: 11px; }
             .service-info input, .service-info select { padding: 9px; font-size: 14px; }
-            button { padding: 10px 12px; font-size: 11px; }
+            button:not(.icon-btn) { padding: 10px 12px; font-size: 11px; }
             .section-title { font-size: 13px; }
             .song-item { padding: 8px; }
             .song-number { font-size: 14px; }
@@ -169,12 +188,12 @@
         </div>
 
         <div class="controls">
-            <button id="btnGenerate" onclick="generateService()" disabled style="opacity:0.45; cursor:not-allowed;">🎲 Generate New Service</button>
-            <button id="btnSave" class="save-btn" onclick="saveService()" disabled style="opacity:0.45; cursor:not-allowed;">💾 Save Service</button>
-            <button class="whatsapp-btn" onclick="shareToWhatsApp()">📱 Share to WhatsApp</button>
-            <button class="history-btn" onclick="showHistory()">📜 View History</button>
-            <button class="print-btn" onclick="window.print()">🖨️ Print</button>
-            <button id="btnSync" onclick="manualSync()" style="background: #48bb78; opacity:0.45; cursor:not-allowed;" disabled>🔄 Sync Now</button>
+            <button id="btnGenerate" class="icon-btn" onclick="generateService()" disabled title="Generate New Service" aria-label="Generate New Service" style="opacity:0.45; cursor:not-allowed;">🎲</button>
+            <button id="btnSave" class="icon-btn save-btn" onclick="saveService()" disabled title="Save Service" aria-label="Save Service" style="opacity:0.45; cursor:not-allowed;">💾</button>
+            <button class="icon-btn whatsapp-btn" onclick="shareToWhatsApp()" title="Share to WhatsApp" aria-label="Share to WhatsApp">📱</button>
+            <button class="icon-btn history-btn" onclick="showHistory()" title="View History" aria-label="View History">📜</button>
+            <button class="icon-btn print-btn" onclick="window.print()" title="Print" aria-label="Print">🖨️</button>
+            <button id="btnSync" class="icon-btn" onclick="manualSync()" disabled title="Sync Now" aria-label="Sync Now" style="background:#48bb78; opacity:0.45; cursor:not-allowed;">🔄</button>
             <select id="offertoryConvention">
                 <option value="alternate">Alternate Conventions</option>
                 <option value="maramon-2025">Maramon 2025</option>
