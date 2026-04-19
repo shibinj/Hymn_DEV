@@ -395,16 +395,18 @@
 
         function wasRecentlyUsed(songNum, category) {
             const twoMonthsAgo = Date.now() - (60 * 24 * 60 * 60 * 1000);
-            
+
             // Exclude the service currently being edited
-            const editingDate = window.editingServiceIndex !== undefined 
-                ? serviceHistory[window.editingServiceIndex]?.date 
+            const editingDate = window.editingServiceIndex !== undefined
+                ? serviceHistory[window.editingServiceIndex]?.date
                 : undefined;
-            
-            return serviceHistory.some(service => 
-                service.confirmed === true &&
+
+            // Any saved service (confirmed or not) counts — confirmed check was
+            // preventing warnings for services saved before being marked as sung
+            return serviceHistory.some(service =>
+                service.confirmed !== false &&
                 service.date !== editingDate &&
-                service.date > twoMonthsAgo && 
+                service.date > twoMonthsAgo &&
                 service.songs.some(s => s.number === songNum && s.category === category)
             );
         }
