@@ -197,10 +197,23 @@ window.signInWithGoogle = async function() {
 window.loadFromFirestore = async function() {
     try {
         updateSyncStatus('⬇️ Loading...');
-        const snap = await getDocs(collection(db, 'dsmcSchedule'));
+        const [schedSnap, attSnap] = await Promise.all([
+            getDocs(collection(db, 'dsmcSchedule')),
+            getDocs(collection(db, 'choirAttendance'))
+        ]);
         scheduleHistory = [];
-        snap.forEach(d => scheduleHistory.push(d.data()));
+        schedSnap.forEach(d => scheduleHistory.push(d.data()));
         scheduleHistory.sort((a, b) => b.date - a.date);
+
+        attendanceData = {};
+        attSnap.forEach(d => {
+            const decoded = {};
+            for (const [k, v] of Object.entries(d.data())) {
+                decoded[k.replace(/__dot__/g, '.')] = v;
+            }
+            attendanceData[d.id] = decoded;
+        });
+
         updateSyncStatus(`✅ ${scheduleHistory.length} schedules loaded`);
         setTimeout(() => updateSyncStatus(''), 3000);
         loadScheduleForCurrentDate();
@@ -232,6 +245,7 @@ window.deleteFromFirestore = async function(dateStr) {
 let isAuthenticated = false;
 let currentUser = null;
 let scheduleHistory = [];
+let attendanceData = {};
 let members = { female: [], male: [], occasional: [] };
 
 const SLOT_DEFS = [
@@ -270,10 +284,19 @@ const slotMap = Object.fromEntries(SLOT_DEFS.map(s => [s.id, s]));
 function getMemberList(gender) {
     const f = members.female || [];
     const m = members.male   || [];
-    const o = members.occasional || [];
+    // occasional members are excluded from all auto-fill and dropdowns
     if (gender === 'female') return [...f].sort();
     if (gender === 'male')   return [...m].sort();
-    return [...f, ...m, ...o].sort();
+    return [...f, ...m].sort();
+}
+
+// Returns true if the member has no 'P' record in the last 2 months of attendance data
+function isContinuouslyAbsent(name) {
+    const twoMonthsAgo = Date.now() - (60 * 24 * 60 * 60 * 1000);
+    const recentDates = Object.keys(attendanceData).filter(d => new Date(d).getTime() >= twoMonthsAgo);
+    if (!recentDates.length) return false; // no data → don't penalise
+    const wasPresent = recentDates.some(d => attendanceData[d][name] === 'P');
+    return !wasPresent;
 }
 
 function renderForm(slots, lastYearSlots) {
@@ -360,17 +383,29 @@ function autoFill() {
     if (!dateStr) { alert('Please select a date first.'); return; }
 
     const lastYearSlots = getLastYearMaySlots(dateStr) || {};
-    const assigned = new Set(); // prevent same person in two slots within this fill
+    const assigned = new Set();
 
     const suggested = {};
     SLOT_DEFS.forEach(def => {
         const pool = getMemberList(def.gender);
         const lastYearPerson = lastYearSlots[def.id] || '';
 
-        // Prefer people who didn't do this slot last year and aren't already assigned
-        let preferred = pool.filter(p => p !== lastYearPerson && !assigned.has(p));
-        // Fall back to anyone not yet assigned (ignoring last-year constraint)
-        if (!preferred.length) preferred = pool.filter(p => !assigned.has(p));
+        // Tier 1: not last year's person, not continuously absent, not yet assigned
+        let preferred = pool.filter(p =>
+            p !== lastYearPerson && !isContinuouslyAbsent(p) && !assigned.has(p));
+
+        // Tier 2: relax last-year constraint (still present, not yet assigned)
+        if (!preferred.length)
+            preferred = pool.filter(p => !isContinuouslyAbsent(p) && !assigned.has(p));
+
+        // Tier 3: relax absence constraint (not last year, not yet assigned)
+        if (!preferred.length)
+            preferred = pool.filter(p => p !== lastYearPerson && !assigned.has(p));
+
+        // Tier 4: anyone not yet assigned
+        if (!preferred.length)
+            preferred = pool.filter(p => !assigned.has(p));
+
         // Last resort: full pool
         if (!preferred.length) preferred = pool;
 
@@ -379,10 +414,10 @@ function autoFill() {
         assigned.add(pick);
     });
 
-    // Apply to selects, keeping any slot the admin already filled
+    // Only fill empty slots — respect any manual selections already made
     SLOT_DEFS.forEach(def => {
         const el = document.getElementById(`slot_${def.id}`);
-        if (!el || el.value) return; // skip already-filled slots
+        if (!el || el.value) return;
         el.value = suggested[def.id] || '';
     });
 }
